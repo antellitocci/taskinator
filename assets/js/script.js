@@ -1,13 +1,15 @@
-var buttonElem = document.querySelector("#save-task");
+var formElem = document.querySelector("#task-form");
 var tasksToDoElem = document.querySelector("#tasks-to-do");
 
-var createTaskHandler = function(){
+var createTaskHandler = function(event){
+
+    event.preventDefault();
+
     var taskListItemElem = document.createElement('li');
     taskListItemElem.className = "task-item";
-    taskListItemText = window.prompt('Enter your task.', "");
-    taskListItemElem.textContent = taskListItemText;
+    taskListItemElem.textContent = "I wish I could submit my own task.";
     tasksToDoElem.appendChild(taskListItemElem);
 }
 
-buttonElem.addEventListener("click", createTaskHandler);
+formElem.addEventListener("submit", createTaskHandler);
 
