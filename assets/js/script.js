@@ -1,6 +1,9 @@
 var formElem = document.querySelector("#task-form");
 var tasksToDoElem = document.querySelector("#tasks-to-do");
 
+//Declare id counter for tasks
+var taskIDCounter = 0;
+
 var taskFormHandler = function(event){
 
     event.preventDefault();
@@ -33,6 +36,9 @@ var createTaskElem = function(taskDataObj){
     var taskListItemElem = document.createElement('li');
     taskListItemElem.className = "task-item";
 
+    //Add task id as custom attribute
+    taskListItemElem.setAttribute("data-task-id", taskIDCounter);
+
     //Create a div to hold task info and add to list item
     var taskInfoElem = document.createElement('div');
     taskInfoElem.className = "task-info";
@@ -41,8 +47,60 @@ var createTaskElem = function(taskDataObj){
     taskInfoElem.innerHTML = "<h3 class='task-name'>" + taskDataObj.name + "</h3><span class='task-type'>" + taskDataObj.type + "</span>";
     taskListItemElem.appendChild(taskInfoElem);
 
+    var taskActionsElem = createTaskActions(taskIDCounter);
+    taskListItemElem.appendChild(taskActionsElem);
+    
+    tasksToDoElem.appendChild(taskListItemElem);
+
+
     //Add entire list item to list
     tasksToDoElem.appendChild(taskListItemElem);
+
+    //Increase task counter for next unique id
+    taskIDCounter ++;
+}
+
+var createTaskActions = function(taskId)
+{
+    var actionContainerElem = document.createElement("div");
+    actionContainerElem.className = "task-actions";
+
+    //Create Edit button
+    var editButtonElem = document.createElement("button");
+    editButtonElem.textContent = "Edit";
+    editButtonElem.className = "btn edit-btn";
+    editButtonElem.setAttribute("data-task-id", taskId);
+
+    actionContainerElem.appendChild(editButtonElem);
+
+    //Create delete button    
+    var deleteButtonElem = document.createElement("button");
+    deleteButtonElem.textContent = "Delete";
+    deleteButtonElem.className = "btn delete-btn";
+    deleteButtonElem.setAttribute("data-task-id", taskId);
+
+    actionContainerElem.appendChild(deleteButtonElem);
+
+    //Create task status dropdown
+    var statusSelectElem = document.createElement('select');
+    statusSelectElem.className = "select-status";
+    statusSelectElem.setAttribute("name", "status-change");
+    statusSelectElem.setAttribute("data-task-id", taskId);
+
+    var statusChoices = ["To Do", "In Progress", "Completed"];
+    for (var i=0; i < statusChoices.length; i++)
+    {
+        //create option element
+        var statusOptionElem = document.createElement("option");
+        statusOptionElem.textContent = statusChoices[i];
+        statusOptionElem.setAttribute("value", statusChoices[i]);
+        //append to select
+        statusSelectElem.appendChild(statusOptionElem);
+    }
+
+    actionContainerElem.appendChild(statusSelectElem);
+
+    return actionContainerElem;
 }
 
 formElem.addEventListener("submit", taskFormHandler);
