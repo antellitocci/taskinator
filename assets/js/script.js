@@ -1,6 +1,8 @@
 var formElem = document.querySelector("#task-form");
 var tasksToDoElem = document.querySelector("#tasks-to-do");
 var pageContentElem = document.querySelector("#page-content");
+var tasksInProgressElem = document.querySelector("#tasks-in-progress");
+var tasksCompleteElem = document.querySelector("#tasks-completed");
 
 //Declare id counter for tasks
 var taskIDCounter = 0;
@@ -130,7 +132,7 @@ var completeEditTask = function(taskName, taskType, taskId)
     document.querySelector("#save-task").textContent = "Add Task";
 };
 
-formElem.addEventListener("submit", taskFormHandler);
+
 
 var taskButtonHandler = function(event)
 {
@@ -179,5 +181,35 @@ var deleteTask = function(taskId)
     taskSelected.remove();
 };
 
+var taskStatusChangeHandler = function(event) {
+
+    //get the task item's id
+    var taskId = event.target.getAttribute("data-task-id");
+
+    //get the currently selected option's value and convert to lowercase
+    var statusValue = event.target.value.toLowerCase();
+
+    //find the parent task item element based on the id
+    var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
+
+    if(statusValue ==="to do")
+    {
+        tasksToDoElem.appendChild(taskSelected);
+    }
+    else if (statusValue === "in progress")
+    {
+        tasksInProgressElem.appendChild(taskSelected);
+    }
+    else if (statusValue === "completed")
+    {
+        tasksCompleteElem.appendChild(taskSelected);
+    }
+
+};
+
+formElem.addEventListener("submit", taskFormHandler);
+
 pageContentElem.addEventListener("click", taskButtonHandler);
+
+pageContentElem.addEventListener("change", taskStatusChangeHandler);
 
