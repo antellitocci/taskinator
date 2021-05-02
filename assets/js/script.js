@@ -257,9 +257,67 @@ var saveTasks = function (){
     localStorage.setItem("tasks", JSON.stringify(tasks));
 };
 
+var loadTasks = function(){
+    //get tasks from localStorage
+    tasks = localStorage.getItem("tasks");
+
+    if(tasks === null)
+    {
+        tasks = [];
+        return false;
+    }
+    //convert tasks to array from string
+    tasks = JSON.parse(tasks);
+    console.log(tasks);
+    //iterate through tasks and add them to page
+    for(var i = 0; i < tasks.length; i++)
+    {
+        tasks[i].id = taskIDCounter;
+        console.log(tasks[i]);
+        taskListItemElem = document.createElement("li");
+        taskListItemElem.className = "task-item";
+        taskListItemElem.setAttribute("data-task-id",tasks[i].id);
+
+        taskInfoElem = document.createElement("div");
+        taskInfoElem.className = "task-info";
+        taskInfoElem.innerHTML = "<h3 class='task-name'>" + tasks[i].name + "</h3><span class='task-type'>" + tasks[i].type + "</span>";
+
+        taskListItemElem.appendChild(taskInfoElem);
+
+        taskActionsElem = createTaskActions(tasks[i].id);
+
+        taskListItemElem.appendChild(taskActionsElem);
+
+        if(tasks[i].status === "to do")
+        {
+            taskListItemElem.querySelector("select[name='status-change']").selectedIndex = 0;
+            
+            tasksToDoElem.appendChild(taskListItemElem);
+        }
+        else if (tasks[i].status === "in progress")
+        {
+            taskListItemElem.querySelector("select[name='status-change']").selectedIndex = 1;
+
+            tasksInProgressElem.appendChild(taskListItemElem);
+        }
+        else if (tasks[i].status === "completed")
+        {
+            taskListItemElem.querySelector("select[name='status-change']").selectedIndex = 2;
+
+            tasksCompleteElem.appendChild(taskListItemElem);
+        }
+
+        taskIDCounter ++;
+        console.log(taskListItemElem);
+    }
+
+    
+};
+
 formElem.addEventListener("submit", taskFormHandler);
 
 pageContentElem.addEventListener("click", taskButtonHandler);
 
 pageContentElem.addEventListener("change", taskStatusChangeHandler);
 
+loadTasks();
